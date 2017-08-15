@@ -3,12 +3,21 @@
 
 int main(void)
 {
-    int i,j,a,primo;
+    int i,j,a,primo,contador, primo2;
+    contador=0;
     primo=911;
+    primo2=primo;
     j=0;
     a=0;
+
+    while(primo2/10>0)
+    {
+        primo2=primo2/10;
+        contador++;
+    }
+
     
-    while(j<3){
+    while(j<contador){
 
     	for(i=1;i<=primo;i++)
 			{
