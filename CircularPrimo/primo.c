@@ -21,7 +21,7 @@ int main(void)
 
     	for(i=1;i<=primo;i++)
 			{
-			if(primo%i==0) // si num1 módulo de i es 0, incrementamos a en 1.
+			if(primo%i==0) 
 				a++;
 			}
 
