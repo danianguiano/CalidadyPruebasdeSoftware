@@ -26,7 +26,15 @@ TYPED_TEST(Fixture, implementations)
 {
 
 	int a[] = {8,7,3,5,2,9};
+	int b[]={2,3,5,7,8,9};
 	int i= 6;
 	this->sortTest->doSomething(a,i);
 
 };
+
+TYPED_TEST_CASE(Fixture, implementations)
+{
+	EXPECT_TRUE(a==b);
+};
+
+

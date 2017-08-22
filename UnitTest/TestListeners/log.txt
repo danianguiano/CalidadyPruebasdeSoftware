@@ -1,0 +1,10 @@
+Holi. Bienvenido.
+TestCase: TcnUno
+TestName: tname
+falló la prueba, algo hiciste mallinea del error:60
+      Expected: 1
+To be equal to: -1
+El tiempo de ejecución de NAME fue: 0
+El numero de tests ejecutados fue: 1
+correctos: 0
+incorrectos:1
