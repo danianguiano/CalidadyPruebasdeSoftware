@@ -1,0 +1,15 @@
+language: python
+sudo: required
+python:
+- '2.7'
+env:
+  global:
+  - DJANGO_SETTINGS_MODULE=fiware_cloto.cloto_settings.settings_tests
+  - COVERALLS_SERVICE_NAME=travis-ci
+    # COVERALLS_REPO_TOKEN (encrypted)
+  - secure: vxVnu3BO97+0Hl0Z3rhQ+J8SaCqVloch3gM54YBf3DsmvxVJuA/Ij7qucungyQxsi5Ul0ZqOsvw+YqHfsTPTrTmTUsxcYdo3AkH1Cc1kL6yahBb5be0k793D+FrlvibDcPhDLhvz0lMfUTQKwjjRvwWggGE9p2EL/IEARs85fKE=
+script:
+- sh checkstyle.sh
+- sudo ./build.sh travis_build
+after_success:
+- coveralls

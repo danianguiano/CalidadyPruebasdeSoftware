@@ -1,0 +1,20 @@
+language: node_js
+
+node_js:
+ - "4"
+ - "6"
+
+branches:
+  only:
+    - master
+
+services:
+ - mongodb
+
+install:
+ - npm install
+
+before_install:
+ - npm update -q  
+ - npm install -g grunt-cli
+

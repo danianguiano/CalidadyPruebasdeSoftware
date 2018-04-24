@@ -1,0 +1,1111 @@
+FORMAT: 1A
+HOST: http://keyrock
+TITLE: Identity Manager GE - Keyrock Specification
+DATE: 19 September 2016
+VERSION: v3
+APIARY_PROJECT: keyrock
+SPEC_URL: http://ging.github.io/fiware-idm/api-spec/
+GITHUB_SOURCE: https://github.com/ging/fiware-idm
+
+# Identity Manager GE - Keyrock
+
+Identity Manager (IdM) GE API specifications comply with existing standards for authentication and user and provide access information. The following sections provide pointers to those standards and, when applicable, details about how the RESTful binding work. 
+
+This specification is intended for Service Consumers (with developement skills) and Cloud Providers. For the former, this document provides a full specification of how to interoperate with the Identity Management Service API. For the latter, this specification indicates the interface to be provided to the client application developers to provide the described functionalities. To use this information, the reader should first have a general understanding of the [Generic Enabler service](https://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/FIWARE.ArchitectureDescription.Security.IdentityManagement).
+
+The API user should be familiar with:
+
+* RESTful web services
+* HTTP/1.1
+* JSON and/or XML data serialization formats.
+* SCIM 2.0
+* OAuth 2.0 
+
+# Preface
+
+## Editors
+
++ Álvaro Alonso González
++ Enrique García Navalón
++ Federico A. Fernández Moreno
+
+## Copyright
+
+Copyright © 2015-2016 by [UPM](https://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/UPM).
+
+## License
+
+
+This specification is licensed under the
+[FIWARE Open Specification License (implicit patent license)](https://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/FI-WARE_Open_Specification_Legal_Notice_%28implicit_patents_license%29).
+
+
+## Status
+
+This is a work in progress and is changing on a daily basis.
+Please send your comments to [FIWARE IdM Github Project](https://github.com/ging/fiware-idm/issues)
+
+## Acknowledgements
+
+The editors would like to express their gratitude to all the people that have contributed to this specification. 
+
+#Group Keystone extensions
+
+As Keyrock backend is based on Openstack Keystone, it fully implement its APIs. You can check them in [OpenStack Identity API v3 specification](http://developer.openstack.org/api-ref-identity-v3.html). Openstack also provides some [Identity API curl examples](http://docs.openstack.org/developer/keystone/api_curl_examples.html) in order to understand how the API works.
+
+In order to manage other entities that only Keyrock offers, you have to use the extensions APIs, explained bellow. These APIs are exposed by the back-end NOT the front-end.
+
+## Consumers [/v3/OS-OAUTH2/consumers]
+
+Consumers are the Applications registered in Keyrock to consume OAuth2 resources.
+
+### List Consumers [GET]
++ Request
+    + Headers
+    
+            X-Auth-token: token
+
++ Response 200 (application/json)
+
+        {
+          "links": {
+            "self": "http://host/v3/OS-OAUTH2/consumers",
+            "previous": null,
+            "next": null
+          },
+          "consumers": [
+            {
+              "scopes": [
+                "all_info"
+              ],
+              "redirect_uris": [
+                "http://my_app/login"
+              ],
+              "img_small": "ApplicationAvatar/small/asdasdasdasdasdad",
+              "name": "App test",
+              "links": {
+                "self": "http://host/v3/OS-OAUTH2/consumers/asdasdasdasdasdad"
+              },
+              "extra": {
+                "url": "http://app.com",
+                "img_original": "ApplicationAvatar/original/asdasdasdasdasdad",
+                "img_small": "ApplicationAvatar/small/asdasdasdasdasdad",
+                "img_medium": "ApplicationAvatar/medium/asdasdasdasdasdad"
+              },
+              "url": "http://app.com",
+              "img_original": "ApplicationAvatar/original/asdasdasdasdasdad",
+              "client_type": "confidential",
+              "response_type": "code",
+              "img_medium": "ApplicationAvatar/medium/asdasdasdasdasdad",
+              "grant_type": "authorization_code",
+              "id": "asdasdasdasdasdad",
+              "description": "App test"
+            }
+          ]
+        }
+
+### Create a Consumer [POST]
+
++ Request (application/json)
+    + Headers
+            
+            X-Auth-token: token
+    
+    + Body
+    
+            {
+              "consumer": {
+                "name": "test_consumer",
+                "description": "my test consumer",
+                "client_type": "confidential",
+                "redirect_uris": [
+                  "http://localhost/login"
+                ],
+                "grant_type": "authorization_code",
+                "scopes": [
+                  "all_info"
+                ]
+              }
+            }
+
++ Response 201 (application/json)
+
+    + Body
+            
+            {
+              "consumer": {
+                "scopes": [
+                  "all_info"
+                ],
+                "redirect_uris": [
+                  "http://localhost/login"
+                ],
+                "description": "my test consumer",
+                "links": {
+                  "self": "http://host/v3/OS-OAUTH2/consumers/308423904823490234923"
+                },
+                "extra": {},
+                "secret": "3534535345345",
+                "client_type": "confidential",
+                "response_type": "code",
+                "grant_type": "authorization_code",
+                "id": "308423904823490234923",
+                "name": "test_consumer"
+              }
+            }
+
+## Consumer [/v3/OS-OAUTH2/consumers/{consumer_id}]
+
++ Parameters
+    + consumer_id - Id of the consumer.
+    
+### Read Consumer details [GET]
++ Request
+    + Headers
+        
+            X-Auth-token: token
++ Response 200 (application/json)
+
+            {
+              "consumer": {
+                "scopes": [
+                  "all_info"
+                ],
+                "redirect_uris": [
+                  "http://app.com/v1/login_fiware"
+                ],
+                "img_small": "ApplicationAvatar/small/dddjajdsajd23234232342",
+                "name": "App test",
+                "links": {
+                  "self": "http://host/v3/OS-OAUTH2/consumers/dddjajdsajd23234232342"
+                },
+                "extra": {
+                  "url": "http://app.com/v1",
+                  "img_original": "ApplicationAvatar/original/dddjajdsajd23234232342",
+                  "img_small": "ApplicationAvatar/small/dddjajdsajd23234232342",
+                  "img_medium": "ApplicationAvatar/medium/dddjajdsajd23234232342"
+                },
+                "url": "http://app.com/v1",
+                "img_original": "ApplicationAvatar/original/dddjajdsajd23234232342",
+                "description": "App test",
+                "secret": "43534534535345345345345",
+                "client_type": "confidential",
+                "response_type": "code",
+                "grant_type": "authorization_code",
+                "id": "dddjajdsajd23234232342",
+                "img_medium": "ApplicationAvatar/medium/dddjajdsajd23234232342"
+              }
+            }
+
+### Update a Consumer [PATCH]
+
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+    
+    + Body
+
+            {
+              "consumer": {
+                "field_to_update": "value",
+                "antoher_field_to_update": [
+                  "another_value"
+                ]
+              }
+            }
+
++ Response 200 (application/json)
+
+### Delete a Consumer [DELETE]
++ Request
+    + Headers
+            
+            X-Auth-token: token
++ Response 204 (application/json)
+
+## Roles [/v3/OS-ROLES/roles]
+
+
+### List Roles [GET]
++ Request
+    + Headers
+        
+            X-Auth-token: token
+
++ Response 200 (application/json)
+
+            {
+              "links": {
+                "self": "http://host/v3/OS-ROLES/roles",
+                "previous": null,
+                "next": null
+              },
+              "roles": [
+                {
+                  "is_internal": false,
+                  "application_id": "3123123131fg12f3g1f23g1jjjhg123h",
+                  "id": "312312384578231j312gff2h3782318",
+                  "links": {
+                    "self": "http://host/v3/OS-ROLES/roles/312312384578231j312gff2h3782318"
+                  },
+                  "name": "admin1"
+                },
+                {
+                  "is_internal": false,
+                  "application_id": "23123897182903712893712h3dh1031sd3",
+                  "id": "90834823948209f0sdf8jf'82kr820384",
+                  "links": {
+                    "self": "http://host/v3/OS-ROLES/roles/90834823948209f0sdf8jf82kr820384"
+                  },
+                  "name": "test"
+                }
+              ]
+            }
+
+### Create a Role [POST]
+
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+    
+    + Body
+        
+            {
+              "role": {
+                "name": "test_role",
+                "application_id": "2222"
+              }
+            }
+
++ Response 201 (application/json)
+
+    + Body
+
+            {
+              "role": {
+                "is_internal": false,
+                "application_id": "2222",
+                "id": "308423904823490234923",
+                "links": {
+                  "self": "http://host/v3/OS-ROLES/roles/308423904823490234923"
+                },
+                "name": "test_consumer"
+              }
+            }
+
+## Role [/v3/OS-ROLES/roles/{role_id}]
+
++ Parameters
+    + role_id - Id of the role.
+
+### Read Role details [GET]
++ Request
+    + Headers
+    
+            X-Auth-token: token
++ Response 200 (application/json)
+
+        {
+          "role": {
+            "is_internal": false,
+            "application_id": "3893298128973173d9173712d3",
+            "id": "213412312jsd3jsj3812s3123",
+            "links": {
+              "self": "http://host/v3/OS-ROLES/roles/213412312jsd3jsj3812s3123"
+            },
+            "name": "physician"
+          }
+        }
+
+### Update a Role [PATCH]
+
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+    
+    + Body
+
+            {
+              "role": {
+                "name": "test_role_new",
+                "application_id": "2222"
+              }
+            }
+
++ Response 200 (application/json)
+
+### Delete a Role [DELETE]
++ Request
+    + Headers
+        
+            X-Auth-token: token
++ Response 204 (application/json)
+
+## Permissions [/v3/OS-ROLES/permissions]
+
+
+### List Permissions [GET]
++ Request
+    + Headers
+        
+            X-Auth-token: token
++ Response 200 (application/json)
+
+        {
+          "links": {
+            "self": "http://host/v3/OS-ROLES/permissions",
+            "previous": null,
+            "next": null
+          },
+          "permissions": [
+            {
+              "xml": "",
+              "resource": "radio",
+              "name": "Access",
+              "links": {
+                "self": "http://host/v3/OS-ROLES/permissions/723893988932183717434rhejas"
+              },
+              "is_internal": false,
+              "action": "GET",
+              "application_id": "3423423424c234cx2342c",
+              "id": "723893988932183717434rhejas"
+            },
+            {
+              "xml": "",
+              "resource": "/ui/resource1",
+              "name": "identify resource1",
+              "links": {
+                "self": "http://host/v3/OS-ROLES/permissions/3987429348'3239234234"
+              },
+              "is_internal": false,
+              "action": "POST",
+              "application_id": "234234xc43242c",
+              "id": "3987429348'3239234234"
+            }
+          ]
+        }
+
+### Create a Permission [POST]
+
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+    
+    + Body
+
+            {
+              "permission": {
+                "name": "test_permission",
+                "application_id": "2222"
+              }
+            }
+
++ Response 201 (application/json)
+
+    + Body
+    
+            {
+              "permission": {
+                "xml": null,
+                "resource": null,
+                "name": "test_consumer",
+                "links": {
+                  "self": "http://host/v3/OS-ROLES/permissions/1283798173489734892734983"
+                },
+                "is_internal": false,
+                "action": null,
+                "application_id": "2222",
+                "id": "1283798173489734892734983"
+              }
+            }
+
+## Permission [/v3/OS-ROLES/permissions/{permission_id}]
+
++ Parameters
+    + permission_id - Id of the permission.
+
+### Read Permission details [GET]
++ Request
+    + Headers
+        
+            X-Auth-token: token
++ Response 200 (application/json)
+
+            {
+              "permission": {
+                "xml": "",
+                "resource": "/enterprise/edit",
+                "name": "Enterprise",
+                "links": {
+                  "self": "http://host/v3/OS-ROLES/permissions/21897318273128937sh12a1"
+                },
+                "is_internal": false,
+                "action": "GET",
+                "application_id": "23129371237917f17fd07102d7",
+                "id": "21897318273128937sh12a1"
+              }
+            }
+
+### Update a Permission [PATCH]
+
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+    
+    + Body
+
+            {
+              "permission": {
+                "name": "test_permission",
+                "application_id": "2222"
+              }
+            }
+
++ Response 200 (application/json)
+
+### Delete a Permission [DELETE]
++ Request
+    + Headers
+        
+            X-Auth-token: token
++ Response 204 (application/json)
+
+## Role - Permission Relationships [/v3/OS-ROLES/roles/{role_id}/permissions]
+
++ Parameters
+    + role_id - Id of the role.
+
+### List permissions associated to a role [GET]
++ Request
+    + Headers
+            
+            X-Auth-token: token
++ Response 200 (application/json)
+
+        {
+          "links": {
+            "self": "http://host/v3/OS-ROLES/permissions",
+            "previous": null,
+            "next": null
+          },
+          "permissions": [
+            {
+              "xml": null,
+              "resource": "res2",
+              "name": "getInfo",
+              "links": {
+                "self": "http://host/v3/OS-ROLES/permissions/23780128371283701238712307"
+              },
+              "is_internal": false,
+              "action": "GET",
+              "application_id": "asdasdasd12313213123",
+              "id": "23780128371283701238712307"
+            }
+          ]
+        }
+
+## Role - Permission Relationship [/v3/OS-ROLES/roles/{role_id}/permissions/{permission_id}]
+
++ Parameters
+    + role_id - Id of the role.
+    + permission_id - Id of the permission.
+
+### Assign a permission to a role [PUT]
++ Request
+    + Headers
+        
+            X-Auth-token: token
++ Response 204
+
+### Remove a permission from a role [DELETE]
++ Request
+    + Headers
+        
+            X-Auth-token: token
++ Response 204 (application/json)
+
+## Role - User Relationships [/v3/OS-ROLES/users/role_assignments]
+
+### List users role assignments [GET]
++ Request
+    + Headers
+        
+            X-Auth-token: token
++ Response 200 (application/json)
+
+        {
+          "role_assignments": [
+            {
+              "organization_id": "32163781263892173912312",
+              "application_id": "12312301293-80181902380",
+              "user_id": "30891239081038123",
+              "role_id": "12331234"
+            },
+            {
+              "organization_id": "00000000000000000000000000000frb",
+              "application_id": "645765889gsdfadsasd",
+              "user_id": "4341234213423234234",
+              "role_id": "4324234"
+            }
+          ]
+        }
+
+## Role - User Relationship [/v3/OS-ROLES/users/{user_id}/applications/{application_id}/roles/{role_id}]
+
++ Parameters
+    + user_id - Id of the user.
+    + application_id - Id of the application.
+    + role_id - Id of the role.
+
+### Assign a role to a user [PUT]
++ Request
+    + Headers
+        
+            X-Auth-token: token
++ Response 204
+        
+### Remove a role assignment from a user [DELETE]
+
++ Response 204
+
+## Role - User Relationship inside an organization [/v3/OS-ROLES/users/{user_id}/organizations/{organization_id}/applications/{application_id}/roles/{role_id}]
+
++ Parameters
+    + user_id - Id of the user
+    + organization_id - Id of the organization.
+    + application_id - Id of the application.
+    + role_id - Id of the role.
+
+### Assign a role to a user inside an organization [PUT]
++ Request
+    + Headers
+        
+            X-Auth-token: token
++ Response 204
+        
+### Remove a role assignment from a user inside an organization [DELETE]
++ Request
+    + Headers
+        
+            X-Auth-token: token
++ Response 204
+
+## Role - Organization Relationships [/v3/OS-ROLES/organizations/role_assignments]
+
+### List organizations role assignments [GET]
+
++ Response 200 (application/json)
+
+## Role - Organization Relationship [/v3/OS-ROLES/organizations/{organization_id}/applications/{application_id}/roles/{role_id}]
+
++ Parameters
+    + organization_id - Id of the organization.
+    + application_id - Id of the application.
+    + role_id - Id of the role.
+
+### Assign a role to an organization [PUT]
++ Request
+    + Headers
+        
+            X-Auth-token: token
++ Response 204
+
+### Remove a role assignment from an organization [DELETE]
++ Request
+    + Headers
+        
+            X-Auth-token: token
++ Response 204 (application/json)
+
+## Two Factor Authentication [/v3/OS-TWO-FACTOR/two_factor_auth?user_id={user_id}&user_name={user_name}&domain_id={domain_id}&domain_name={domain_name}]
+
+### Check if two factor authentication is enabled for a certain user [HEAD]
+Either user_id or user_name (along with domain_id or domain_name) must be provided.
+
++ Request
+    + Headers
+        
+            X-Auth-token: token
++ Parameters
+    + user_id (optional) - ID of the user to be checked.
+    + user_name (optional) - Name of the user to be checked.
+    + domain_id (optional) - ID of the domain that the user belongs to.
+    + domain_name (optional) - Name of the domain that the user belongs to.
+
++ Response 204
+    
++ Response 404
+
+## Two Factor Authentication Keys [/v3/users/{user_id}/OS-TWO-FACTOR/two_factor_auth]
+
++ Parameters
+    + user_id - ID of the user.
+
+### Enable two factor authentication / Get new key [POST]
+
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+    
+    + Body
+    
+            {
+                "two_factor_auth": {
+                    "security_question":"sample question",
+                    "security_answer":"sample answer"
+                }
+            }
+        
++ Response 201 (application/json)
+
+    + Body
+
+            {
+                "two_factor_auth": {
+                    "two_factor_key": "TSLX244ZPTDFTF43", 
+                    "user_id": "user0", 
+                    "links": {
+                        "self": "http://localhost:5000/v3/OS-TWOFACTOR/two_factor_auth"
+                    }, 
+                    "uri": "otpauth://totp/FIWARE%20Lab%20Accounts:user0@test.com?secret=TSLX244ZPTDFTF43&issuer=FIWARE%20Lab%20Accounts",
+                    "security_answer": "sample question", 
+                    "security_question": "sample answer"
+                }
+            }
+            
++ Request (application/json)
+    + Headers
+    
+            X-Auth-token: token
+    
++ Response 201 (application/json)
+
+    + Body
+
+            {
+                "two_factor_auth": {
+                    "two_factor_key": "O3JGFSSJZHQL24Q6", 
+                    "user_id": "user_0", 
+                    "links": {
+                        "self": "http://localhost:5000/v3/OS-TWOFACTOR/two_factor_auth"
+                    }, 
+                    "uri": "otpauth://totp/FIWARE%20Lab%20Accounts:user0@test.com?secret=O3JGFSSJZHQL24Q6&issuer=FIWARE%20Lab%20Accounts",
+                    "security_answer": "sample question", 
+                    "security_question": "sample answer"
+                }
+            }
+
+
+### Disable two factor authentication [DELETE]
++ Request
+    + Headers
+    
+            X-Auth-token: token
++ Response 204
+
+## Two Factor Authentication Security Questions [/v3/users/{user_id}/OS-TWO-FACTOR/]
+
++ Parameters
+    + user_id - ID of the user.
+
+### Retrieve non-sensitive data [GET /v3/users/{user_id}/OS-TWO-FACTOR/two_factor_data]
++ Request
+    + Headers
+        
+            X-Auth-token: token
++ Response 200 (application/json)
+
+    + Body
+    
+            {
+                "two_factor_auth": {
+                    "security_question": "sample question",
+                    "user_id": "user0", 
+                    "links": {
+                        "self": "http://localhost:5000/v3/OS-TWOFACTOR/two_factor_auth"
+                    }
+                }
+            }
+
+### Check security question [HEAD /v3/users/{user_id}/OS-TWO-FACTOR/sec_question?security_answer={security_answer}]
+
++ Parameters
+    + sec_answer - Answer to be checked.
+
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+
++ Response 204
+
++ Response 401
+
++ Response 404
+
+## Two Factor Authentication Devices [/v3/OS-TWO-FACTOR/devices]
+
+### Remember new device or get new token [POST /v3/OS-TWO-FACTOR/devices?user_id={user_id}&user_name={user_name}&domain_name={domain_name}&device_id={device_id}&device_token={device_token}]
+Either user_id or user_name and domain_name must be provided.
+The parameter device_token is required when providing device_id.
+
++ Parameters
+    + user_id (optional) - ID of the user.
+    + user_name (optional) - Name of the user.
+    + domain_name (optional) - Name of the domain that the user belongs to.
+    + device_id (optional) - ID of the device to be remembered, none if new one.
+    + device_token (optional) - Current token of the device, none if new one.
+    
++ Request
+    + Headers
+        
+            X-Auth-token: token
+
++ Response 200 (application/json)
+    
+    + Body
+        
+            {
+                "two_factor_auth": {
+                    "device_token": "7525dc5bc8134b4a97526bcd7e45175e", 
+                    "links": {
+                        "self": "http://localhost:5000/v3/OS-TWOFACTOR/two_factor_auth"
+                    }, 
+                    "device_id": "815dfb0790934775bc8dac15f197a1f0"
+                }
+            }
+
++ Response 401
+
++ Response 404
+
+### Check for device [HEAD /v3/OS-TWO-FACTOR/devices?device_id={device_id}&device_token={device_token}&user_id={user_id}&user_name={user_name}&domain_name={domain_name}]
+Either user_id or user_name and domain_name must be provided.
+
++ Parameters
+    + user_id (optional) - ID of the user.
+    + user_name (optional) - Name of the user.
+    + domain_name (optional) - Name of the domain that the user belongs to.
+    + device_id - ID of the device to be checked.
+    + device_token - Current token of the device to be checked.
+
++ Request
+    + Headers
+        
+            X-Auth-token: token
+    
++ Response 204
+
++ Response 401
+
++ Response 403
+
++ Response 404
+
+### Forget all devices [DELETE /v3/users/{user_id}/OS-TWO-FACTOR/devices]
++ Parameters
+    + user_id - ID of the user.
+    
++ Response 204
+
+#Group SCIM 2.0
+
+The IDM provides several authentication mechanisms. Any of them is valid to access the SCIM 2.0 API.
+
+The access to the SCIM 2.0 API (except ServiceProvider calls) is only allowed for administrators, access attempts performed by non-admin users will be answered with HTTP 401 (Unauthorized).
+
+In this case, we will be using version 2.0 of the API, but version 1.1 is compatible. To use version 1.1, replace in the examples below v2 with v1. In the case of the organizations, only v2 is available.
+
+Just like Keystone extensions, these APIs are exposed by the back-end NOT the front-end.
+
+# Users [/v3/OS-SCIM/v2/Users/]
+
+### List Users [GET]
++ Request
+    + Headers
+        
+            X-Auth-token: token
++ Response 200 (application/json)
+
+        {
+          "totalResults": 12,
+          "Resources": [...],
+          "schemas": [
+            "urn:scim:schemas:core:2.0",
+            "urn:scim:schemas:extension:keystone:2.0"
+          ]
+        }
+
+### Create a User [POST]
+
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+    
+    + Body
+    
+            {
+              "userName": "alice",
+              "displayName": "Alice",
+              "password": "passw0rd",
+              "emails": [
+                {
+                  "value": "alice@mailhost.com"
+                }
+              ]
+            }
+
++ Response 201 (application/json)
+
+        {
+            "userName": "alice",
+            "displayName": "Alice",
+            "emails": [
+                {
+                    "value": "alice@mailhost.com"
+                }
+            ],
+            "urn:scim:schemas:extension:keystone:2.0": {
+                "domain_id": "default",
+                "default_project_id": "de3512b306df4e7e849becd78db255a9"
+            },
+            "meta": {
+                "location": "http://keyrock/v3/users/alice"
+            },
+            "active": true,
+            "id": "alice",
+            "schemas": [
+                "urn:scim:schemas:core:2.0",
+                "urn:scim:schemas:extension:keystone:2.0"
+            ]
+        }
+
+## User [/v3/OS-SCIM/v2/Users/{user_id}]
+
++ Parameters
+    + user_id - Id of the user.
+
+### Read info about a User [GET]
++ Request
+    + Headers
+        
+            X-Auth-token: token
+
++ Response 200 (application/json)
+
+        {
+          "userName": "user1@user.com",
+          "urn:scim:schemas:extension:keystone:2.0": {
+            "domain_id": "default"
+          },
+          "active": true,
+          "id": "user1",
+          "schemas": [
+            "urn:scim:schemas:core:2.0",
+            "urn:scim:schemas:extension:keystone:2.0"
+          ]
+        }
+
+### Update a User [PUT]
+
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+    
+    + Body
+    
+            {
+              "userName": "alice",
+              "displayName": "Alice",
+              "password": "passw0rd_new",
+              "emails": [
+                {
+                  "value": "alice@mailhost.com"
+                }
+              ]
+            }
+
++ Response 200 (application/json)
+
+### Delete a User [DELETE]
++ Request
+    + Headers
+        
+            X-Auth-token: token
+
++ Response 204 (application/json)
+
+# Organizations [/v3/OS-SCIM/v2/Organizations]
+
+### List Organizations [GET]
++ Request
+    + Headers
+        
+            X-Auth-token: token
+
++ Response 200 (application/json)
+
+        {
+          "totalResults": 24,
+          "Resources": [...],
+          "schemas": [
+            "urn:scim:schemas:core:2.0",
+            "urn:scim:schemas:extension:keystone:2.0"
+          ]
+        }
+
+### Create an Organization [POST]
+
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+    
+    + Body
+    
+            {
+              "name": "Name of organization",
+              "is_default": true,
+              "domain_id": "domain",
+              "active": true,
+              "id": "ID"
+            }
+
++ Response 201 (application/json)
+
+        {
+          "name": "MyOrg",
+          "is_default": true,
+          "urn:scim:schemas:extension:keystone:2.0": {
+            "domain_id": "default"
+          },
+          "meta": {
+            "location": "http://localhost:5000/v3/projects/e3fd1defdda74d8786ba526969050bb8"
+          },
+          "active": true,
+          "id": "e3fd1defdda74d8786ba526969050bb8",
+          "schemas": [
+            "urn:scim:schemas:core:2.0",
+            "urn:scim:schemas:extension:keystone:2.0"
+          ]
+        }
+
+## Organization [/v3/OS-SCIM/v2/Organizations/{organization_id}]
+
++ Parameters
+    + organization_id - Id of the organization.
+
+### Read info about an Organization [GET]
++ Request
+    + Headers
+        
+            X-Auth-token: token
+
++ Response 200 (application/json)
+
+        {
+          "name": "org1",
+          "is_default": true,
+          "urn:scim:schemas:extension:keystone:2.0": {
+            "domain_id": "default"
+          },
+          "active": true,
+          "id": "22928e07c0bd4063a7f0bb8c826b0a18",
+          "schemas": [
+            "urn:scim:schemas:core:2.0",
+            "urn:scim:schemas:extension:keystone:2.0"
+          ]
+        }
+
+### Update an Organization [PUT]
+
++ Request (application/json)
+    + Headers
+        
+            X-Auth-token: token
+    
+    + Body
+    
+            {
+                "name": "New name of organization", 
+                "is_default": true,
+                "domain_id": "domain",
+                "active": true, 
+                "id": "ID"
+            }
+
++ Response 200 (application/json)
+
+### Delete an Organization [DELETE]
+
++ Response 204 (application/json)
+
+## Service Provider [/v3/OS-SCIM/v2/ServiceProviderConfigs]
+
+### Read Service Provider Configuration [GET]
+
+"Information" provides the number of total users, total organizations (not counting the default organizations), cloud organizations, and the number of each type of user (basic, trial and community).
++ Request
+    + Headers
+        
+            X-Auth-token: token
+
++ Response 200 (application/json)
+
+        {
+          "sort": {
+            "supported": false
+          },
+          "bulk": {
+            "maxPayloadSize": 0,
+            "supported": false,
+            "maxOperations": 0
+          },
+          "changePassword": {
+            "supported": true
+          },
+          "xmlDataFormat": {
+            "supported": false
+          },
+          "information": {
+            "basicUsers": 1,
+            "totalCloudOrganizations": 12,
+            "totalUserOrganizations": 24,
+            "communityUsers": 0,
+            "totalUsers": 12,
+            "trialUsers": 0,
+            "totalResources": 48
+          },
+          "documentationUrl": "https://github.com/ging/fi-ware-idm/wiki/SCIM-2.0-API",
+          "patch": {
+            "supported": true
+          },
+          "filter": {
+            "supported": true,
+            "maxResults": 9223372036854775807
+          },
+          "etag": {
+            "supported": false
+          },
+          "schemas": [
+            "urn:scim:schemas:core:2.0:ServiceProviderConfig"
+          ],
+          "authenticationSchemes": [
+            {
+              "name": "Keytone Authentication",
+              "documentationUrl": "http://keystone.openstack.org/",
+              "primary": true,
+              "specUrl": "http://specs.openstack.org/openstack/keystone-specs",
+              "type": "keystonetoken",
+              "description": "Authentication using Keystone"
+            }
+          ]
+        }
